@@ -77,7 +77,7 @@
 ;; Together.app - Grab links to the selected items in the library list
 ;; Skim.app - Grab a link to the selected page in the topmost pdf document
 ;; Microsoft Outlook.app - Grab a link to the selected message in the message list
-;; DEVONthink Pro Office.app - Grab a link to the selected DEVONthink item(s); open DEVONthink item by reference
+;; DEVONthink 3.app - Grab a link to the selected DEVONthink item(s); open DEVONthink item by reference
 ;; Evernote.app - Grab a link to the selected Evernote item(s); open Evernote item by ID
 ;; qutebrowser.app - Grab the url of the frontmost tab in the frontmost window
 ;;
@@ -142,8 +142,8 @@
   :type 'string)
 
 (defcustom org-mac-grab-devonthink-app-p t
-  "Add menu option [d]EVONthink to grab links from DEVONthink Pro Office.app."
-  :tag "Grab DEVONthink Pro Office.app links"
+  "Add menu option [d]EVONthink to grab links from DEVONthink 3.app."
+  :tag "Grab DEVONthink 3.app links"
   :group 'org-mac-link
   :type 'boolean)
 
@@ -259,22 +259,22 @@
 When done, go grab the link, and insert it at point."
   (interactive)
   (let* ((descriptors
-	  `(("F" "inder" org-mac-finder-insert-selected ,org-mac-grab-Finder-app-p)
-	    ("m" "ail" org-mac-message-insert-selected ,org-mac-grab-Mail-app-p)
-	    ("d" "EVONthink Pro Office" org-mac-devonthink-item-insert-selected
-	     ,org-mac-grab-devonthink-app-p)
-	    ("o" "utlook" org-mac-outlook-message-insert-selected ,org-mac-grab-Outlook-app-p)
-	    ("a" "ddressbook" org-mac-addressbook-insert-selected ,org-mac-grab-Addressbook-app-p)
-	    ("s" "afari" org-mac-safari-insert-frontmost-url ,org-mac-grab-Safari-app-p)
-	    ("f" "irefox" org-mac-firefox-insert-frontmost-url ,org-mac-grab-Firefox-app-p)
-	    ("v" "imperator" org-mac-vimperator-insert-frontmost-url ,org-mac-grab-Firefox+Vimperator-p)
-	    ("c" "hrome" org-mac-chrome-insert-frontmost-url ,org-mac-grab-Chrome-app-p)
-	    ("b" "rave" org-mac-brave-insert-frontmost-url ,org-mac-grab-Brave-app-p)
+	        `(("F" "inder" org-mac-finder-insert-selected ,org-mac-grab-Finder-app-p)
+	          ("m" "ail" org-mac-message-insert-selected ,org-mac-grab-Mail-app-p)
+	          ("d" "EVONthink" org-mac-devonthink-item-insert-selected
+	           ,org-mac-grab-devonthink-app-p)
+	          ("o" "utlook" org-mac-outlook-message-insert-selected ,org-mac-grab-Outlook-app-p)
+	          ("a" "ddressbook" org-mac-addressbook-insert-selected ,org-mac-grab-Addressbook-app-p)
+	          ("s" "afari" org-mac-safari-insert-frontmost-url ,org-mac-grab-Safari-app-p)
+	          ("f" "irefox" org-mac-firefox-insert-frontmost-url ,org-mac-grab-Firefox-app-p)
+	          ("v" "imperator" org-mac-vimperator-insert-frontmost-url ,org-mac-grab-Firefox+Vimperator-p)
+	          ("c" "hrome" org-mac-chrome-insert-frontmost-url ,org-mac-grab-Chrome-app-p)
+	          ("b" "rave" org-mac-brave-insert-frontmost-url ,org-mac-grab-Brave-app-p)
             ("e" "evernote" org-mac-evernote-note-insert-selected ,org-mac-grab-Evernote-app-p)
-	    ("t" "ogether" org-mac-together-insert-selected ,org-mac-grab-Together-app-p)
-	    ("S" "kim" org-mac-skim-insert-page ,org-mac-grab-Skim-app-p)
-	    ("A" "crobat" org-mac-acrobat-insert-page ,org-mac-grab-Acrobat-app-p)
-	    ("q" "utebrowser" org-mac-qutebrowser-insert-frontmost-url ,org-mac-grab-qutebrowser-app-p)))
+	          ("t" "ogether" org-mac-together-insert-selected ,org-mac-grab-Together-app-p)
+	          ("S" "kim" org-mac-skim-insert-page ,org-mac-grab-Skim-app-p)
+	          ("A" "crobat" org-mac-acrobat-insert-page ,org-mac-grab-Acrobat-app-p)
+	          ("q" "utebrowser" org-mac-qutebrowser-insert-frontmost-url ,org-mac-grab-qutebrowser-app-p)))
          (menu-string (make-string 0 ?x))
          input)
 
@@ -282,8 +282,8 @@ When done, go grab the link, and insert it at point."
     (mapc (lambda (descriptor)
             (when (elt descriptor 3)
               (setf menu-string (concat menu-string
-					"[" (elt descriptor 0) "]"
-					(elt descriptor 1) " "))))
+					                              "[" (elt descriptor 0) "]"
+					                              (elt descriptor 1) " "))))
           descriptors)
     (setf (elt menu-string (- (length menu-string) 1)) ?:)
 
@@ -302,14 +302,14 @@ When done, go grab the link, and insert it at point."
   "Paste in a list of links from an applescript handler.
 The links are of the form <link>::split::<name>."
   (let* ((noquote-as-link-list
-	  (if (string-prefix-p "\"" as-link-list)
-	      (substring as-link-list 1 -1)
-	    as-link-list))
-	 (link-list
+	        (if (string-prefix-p "\"" as-link-list)
+	            (substring as-link-list 1 -1)
+	          as-link-list))
+	       (link-list
           (mapcar (lambda (x) (if (string-match "\\`\"\\(.*\\)\"\\'" x)
-				  (setq x (match-string 1 x)))
-		    x)
-		  (split-string noquote-as-link-list "[\r\n]+")))
+				                          (setq x (match-string 1 x)))
+		                x)
+		              (split-string noquote-as-link-list "[\r\n]+")))
          split-link URL description orglink orglink-insert rtn orglink-list)
     (while link-list
       (setq split-link (split-string (pop link-list) "::split::"))
@@ -340,27 +340,27 @@ The links are of the form <link>::split::<name>."
 
 (defun org-as-mac-firefox-get-frontmost-url ()
   (let ((result
-	 (do-applescript
-	  (concat
-	   "set oldClipboard to the clipboard\n"
-	   "set frontmostApplication to path to frontmost application\n"
-	   "tell application \"Firefox\"\n"
-	   "	activate\n"
-	   "	delay 0.15\n"
-	   "	tell application \"System Events\"\n"
-	   "		keystroke \"l\" using {command down}\n"
-	   "		keystroke \"a\" using {command down}\n"
-	   "		keystroke \"c\" using {command down}\n"
-	   "	end tell\n"
-	   "	delay 0.15\n"
-	   "	set theUrl to the clipboard\n"
-	   "	set the clipboard to oldClipboard\n"
-	   "	set theResult to (get theUrl) & \"::split::\" & (get name of window 1)\n"
-	   "end tell\n"
-	   "activate application (frontmostApplication as text)\n"
-	   "set links to {}\n"
-	   "copy theResult to the end of links\n"
-	   "return links as string\n"))))
+	       (do-applescript
+	        (concat
+	         "set oldClipboard to the clipboard\n"
+	         "set frontmostApplication to path to frontmost application\n"
+	         "tell application \"Firefox\"\n"
+	         "	activate\n"
+	         "	delay 0.15\n"
+	         "	tell application \"System Events\"\n"
+	         "		keystroke \"l\" using {command down}\n"
+	         "		keystroke \"a\" using {command down}\n"
+	         "		keystroke \"c\" using {command down}\n"
+	         "	end tell\n"
+	         "	delay 0.15\n"
+	         "	set theUrl to the clipboard\n"
+	         "	set the clipboard to oldClipboard\n"
+	         "	set theResult to (get theUrl) & \"::split::\" & (get name of window 1)\n"
+	         "end tell\n"
+	         "activate application (frontmostApplication as text)\n"
+	         "set links to {}\n"
+	         "copy theResult to the end of links\n"
+	         "return links as string\n"))))
     (car (split-string result "[\r\n]+" t))))
 
 ;;;###autoload
@@ -381,25 +381,25 @@ The links are of the form <link>::split::<name>."
 
 (defun org-as-mac-vimperator-get-frontmost-url ()
   (let ((result
-	 (do-applescript
-	  (concat
-	   "set oldClipboard to the clipboard\n"
-	   "set frontmostApplication to path to frontmost application\n"
-	   "tell application \"Firefox\"\n"
-	   "	activate\n"
-	   "	delay 0.15\n"
-	   "	tell application \"System Events\"\n"
-	   "		keystroke \"y\"\n"
-	   "	end tell\n"
-	   "	delay 0.15\n"
-	   "	set theUrl to the clipboard\n"
-	   "	set the clipboard to oldClipboard\n"
-	   "	set theResult to (get theUrl) & \"::split::\" & (get name of window 1)\n"
-	   "end tell\n"
-	   "activate application (frontmostApplication as text)\n"
-	   "set links to {}\n"
-	   "copy theResult to the end of links\n"
-	   "return links as string\n"))))
+	       (do-applescript
+	        (concat
+	         "set oldClipboard to the clipboard\n"
+	         "set frontmostApplication to path to frontmost application\n"
+	         "tell application \"Firefox\"\n"
+	         "	activate\n"
+	         "	delay 0.15\n"
+	         "	tell application \"System Events\"\n"
+	         "		keystroke \"y\"\n"
+	         "	end tell\n"
+	         "	delay 0.15\n"
+	         "	set theUrl to the clipboard\n"
+	         "	set the clipboard to oldClipboard\n"
+	         "	set theResult to (get theUrl) & \"::split::\" & (get name of window 1)\n"
+	         "end tell\n"
+	         "activate application (frontmostApplication as text)\n"
+	         "set links to {}\n"
+	         "copy theResult to the end of links\n"
+	         "return links as string\n"))))
     (replace-regexp-in-string
      "\s+-\s+Vimperator" "" (car (split-string result "[\r\n]+" t)))))
 
@@ -421,17 +421,17 @@ The links are of the form <link>::split::<name>."
 
 (defun org-as-mac-chrome-get-frontmost-url ()
   (let ((result
-	 (do-applescript
-	  (concat
-	   "set frontmostApplication to path to frontmost application\n"
-	   "tell application \"Google Chrome\"\n"
-	   "	set theUrl to get URL of active tab of first window\n"
-	   "	set theResult to (get theUrl) & \"::split::\" & (get name of window 1)\n"
-	   "end tell\n"
-	   "activate application (frontmostApplication as text)\n"
-	   "set links to {}\n"
-	   "copy theResult to the end of links\n"
-	   "return links as string\n"))))
+	       (do-applescript
+	        (concat
+	         "set frontmostApplication to path to frontmost application\n"
+	         "tell application \"Google Chrome\"\n"
+	         "	set theUrl to get URL of active tab of first window\n"
+	         "	set theResult to (get theUrl) & \"::split::\" & (get name of window 1)\n"
+	         "end tell\n"
+	         "activate application (frontmostApplication as text)\n"
+	         "set links to {}\n"
+	         "copy theResult to the end of links\n"
+	         "return links as string\n"))))
     (replace-regexp-in-string
      "^\"\\|\"$" "" (car (split-string result "[\r\n]+" t)))))
 
@@ -454,17 +454,17 @@ The links are of the form <link>::split::<name>."
 
 (defun org-as-mac-brave-get-frontmost-url ()
   (let ((result
-	 (do-applescript
-	  (concat
-	   "set frontmostApplication to path to frontmost application\n"
-	   "tell application \"Brave\"\n"
-	   "	set theUrl to get URL of active tab of first window\n"
-	   "	set theResult to (get theUrl) & \"::split::\" & (get name of window 1)\n"
-	   "end tell\n"
-	   "activate application (frontmostApplication as text)\n"
-	   "set links to {}\n"
-	   "copy theResult to the end of links\n"
-	   "return links as string\n"))))
+	       (do-applescript
+	        (concat
+	         "set frontmostApplication to path to frontmost application\n"
+	         "tell application \"Brave\"\n"
+	         "	set theUrl to get URL of active tab of first window\n"
+	         "	set theResult to (get theUrl) & \"::split::\" & (get name of window 1)\n"
+	         "end tell\n"
+	         "activate application (frontmostApplication as text)\n"
+	         "set links to {}\n"
+	         "copy theResult to the end of links\n"
+	         "return links as string\n"))))
     (replace-regexp-in-string
      "^\"\\|\"$" "" (car (split-string result "[\r\n]+" t)))))
 
@@ -750,17 +750,17 @@ The links are of the form <link>::split::<name>."
       (mapconcat
        (lambda (y) "" y)
        (split-string
-	(shell-command-to-string
-	 (format "mdls -raw -name com_microsoft_outlook_recordID -name kMDItemDisplayName \"%s\"" x))
-	"\000")
+	      (shell-command-to-string
+	       (format "mdls -raw -name com_microsoft_outlook_recordID -name kMDItemDisplayName \"%s\"" x))
+	      "\000")
        "::split::")
       "\n"))
    (with-temp-buffer
      (let ((coding-system-for-read (or file-name-coding-system 'utf-8))
-	   (coding-system-for-write 'utf-8))
+	         (coding-system-for-write 'utf-8))
        (shell-command
-	"mdfind com_microsoft_outlook_flagged==1"
-	(current-buffer)))
+	      "mdfind com_microsoft_outlook_flagged==1"
+	      (current-buffer)))
      (split-string
       (buffer-string) "\n" t))
    ""))
@@ -778,10 +778,10 @@ The Org-syntax text will be pushed to the kill ring, and also returned."
   (message "Org Mac Outlook: searching mailboxes...")
   (org-mac-paste-applescript-links
    (if (string= select-or-flag "s")
-	(org-as-get-selected-outlook-mail)
-      (if (string= select-or-flag "f")
-	  (org-sh-get-flagged-outlook-mail)
-	(error "Please select \"s\" or \"f\"")))))
+	     (org-as-get-selected-outlook-mail)
+     (if (string= select-or-flag "f")
+	       (org-sh-get-flagged-outlook-mail)
+	     (error "Please select \"s\" or \"f\"")))))
 
 ;;;###autoload
 (defun org-mac-outlook-message-insert-selected ()
@@ -813,11 +813,11 @@ after heading."
                     (delete-region (match-beginning 0) (match-end 0)))
                   (insert "\n" (org-mac-outlook-message-get-links "f")))
                 (flush-lines "^$" (point) (outline-next-heading)))
-	    (insert "\n" (org-mac-outlook-message-get-links "f")))
-	(goto-char (point-max))
-	(insert "\n")
-	(org-insert-heading nil t)
-	(insert org-heading "\n" (org-mac-outlook-message-get-links "f"))))))
+	          (insert "\n" (org-mac-outlook-message-get-links "f")))
+	      (goto-char (point-max))
+	      (insert "\n")
+	      (org-insert-heading nil t)
+	      (insert org-heading "\n" (org-mac-outlook-message-get-links "f"))))))
 
 ;; Handle links from Evernote.app
 
@@ -853,21 +853,21 @@ Finding the path can be slow."
   (do-applescript
    (concat
     "tell application \"" (org-mac-evernote-path) "\"\n"
-     "    set noteCount to count selection\n"
-     "    if (noteCount < 1) then\n"
-     "        return\n"
-     "    end if\n"
-     "    set theLinkList to {}\n"
-     "    set theSelection to selection\n"
-     "    repeat with theNote in theSelection\n"
-     "        set theTitle to title of theNote\n"
-     "        set theID to local id of theNote\n"
-     "        set theURL to \"mac-evernote:\" & theID\n"
-     "        set theLink to theURL & \"::split::\" & theTitle & \"\n\"\n"
-     "        copy theLink to end of theLinkList\n"
-     "    end repeat\n"
-     "    return theLinkList as string\n"
-     "end tell\n")))
+    "    set noteCount to count selection\n"
+    "    if (noteCount < 1) then\n"
+    "        return\n"
+    "    end if\n"
+    "    set theLinkList to {}\n"
+    "    set theSelection to selection\n"
+    "    repeat with theNote in theSelection\n"
+    "        set theTitle to title of theNote\n"
+    "        set theID to local id of theNote\n"
+    "        set theURL to \"mac-evernote:\" & theID\n"
+    "        set theLink to theURL & \"::split::\" & theTitle & \"\n\"\n"
+    "        copy theLink to end of theLinkList\n"
+    "    end repeat\n"
+    "    return theLinkList as string\n"
+    "end tell\n")))
 
 ;;;###autoload
 (defun org-mac-evernote-note-insert-selected ()
@@ -876,24 +876,24 @@ This will use AppleScript to get the note id and the title of the
 note(s) in Evernote.app and make a link out of it/them."
   (interactive)
   (message "Org Mac Evernote: searching notes...")
-(insert (org-mac-paste-applescript-links
-	 (org-as-get-selected-evernote-notes))))
+  (insert (org-mac-paste-applescript-links
+	         (org-as-get-selected-evernote-notes))))
 
 
-;; Handle links from DEVONthink Pro Office.app
+;; Handle links from DEVONthink 3.app
 
 (org-link-set-parameters "x-devonthink-item" :follow #'org-devonthink-item-open)
 
 (defun org-devonthink-item-open (uid _)
-  "Open UID, which is a reference to an item in DEVONthink Pro Office."
+  "Open UID, which is a reference to an item in DEVONthink 3.app."
   (shell-command (concat "open \"x-devonthink-item:" uid "\"")))
 
 (defun org-as-get-selected-devonthink-item ()
-  "AppleScript to create links to selected items in DEVONthink Pro Office.app."
+  "AppleScript to create links to selected items in DEVONthink 3.app."
   (do-applescript
    (concat
     "set theLinkList to {}\n"
-    "tell application \"DEVONthink Pro\"\n"
+    "tell application \"DEVONthink 3\"\n"
     "set selectedRecords to selection\n"
     "set selectionCount to count of selectedRecords\n"
     "if (selectionCount < 1) then\n"
@@ -911,9 +911,9 @@ note(s) in Evernote.app and make a link out of it/them."
     )))
 
 (defun org-mac-devonthink-get-links ()
-  "Create links to the item(s) currently selected in DEVONthink Pro Office.
+  "Create links to the item(s) currently selected in DEVONthink 3.
 This will use AppleScript to get the `uuid' and the `name' of the
-selected items in DEVONthink Pro Office.app and make links out of
+selected items in DEVONthink 3.app and make links out of
 it/them. This function will push the Org-syntax text to the kill
 ring, and also return it."
   (message "Org Mac DEVONthink: looking for selected items...")
@@ -921,9 +921,9 @@ ring, and also return it."
 
 ;;;###autoload
 (defun org-mac-devonthink-item-insert-selected ()
-  "Insert a link to the item(s) currently selected in DEVONthink Pro Office.
+  "Insert a link to the item(s) currently selected in DEVONthink 3.
 This will use AppleScript to get the `uuid'(s) and the name(s) of the
-selected items in DEVONthink Pro Office and make link(s) out of it/them."
+selected items in DEVONthink 3 and make link(s) out of it/them."
   (interactive)
   (insert (org-mac-devonthink-get-links)))
 
@@ -1027,11 +1027,11 @@ list of message:// links to flagged mail after heading."
                     (delete-region (match-beginning 0) (match-end 0)))
                   (insert "\n" (org-mac-message-get-links "f")))
                 (flush-lines "^$" (point) (outline-next-heading)))
-	    (insert "\n" (org-mac-message-get-links "f")))
-	(goto-char (point-max))
-	(insert "\n")
-	(org-insert-heading nil t)
-	(insert org-heading "\n" (org-mac-message-get-links "f"))))))
+	          (insert "\n" (org-mac-message-get-links "f")))
+	      (goto-char (point-max))
+	      (insert "\n")
+	      (org-insert-heading nil t)
+	      (insert org-heading "\n" (org-mac-message-get-links "f"))))))
 
 
 ;; Handle links from qutebrowser.app
@@ -1060,13 +1060,13 @@ list of message:// links to flagged mail after heading."
            "	delay 0.15\n"
            "	set theTitle to the clipboard\n"
            "	set the clipboard to oldClipboard\n"
-	       "    set theResult to (get theUrl) & \"::split::\" & (get theTitle)\n"
+	         "    set theResult to (get theUrl) & \"::split::\" & (get theTitle)\n"
            "end tell\n"
            "activate application (frontmostApplication as text)\n"
            "set links to {}\n"
            "copy theResult to the end of links\n"
            "return links as string\n"))))
-     (car (split-string result "[\r\n]+" t))))
+    (car (split-string result "[\r\n]+" t))))
 
 ;;;###autoload
 (defun org-mac-qutebrowser-get-frontmost-url ()
